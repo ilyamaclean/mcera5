@@ -223,8 +223,8 @@ extract_clima <- function(
   windspeed = windheight(windspeed, 10, 2)
   winddir = (terra::atan2(u10, v10) * 180/pi + 180)%%360
   cloudcover = tcc * 100
-  netlong = abs(msnlwrf) * 0.0036
-  downlong = msdwlwrf * 0.0036
+  netlong = abs(msnlwrf)
+  downlong = msdwlwrf
   uplong = netlong + downlong
   emissivity = downlong/uplong # converted to MJ m-2 hr-1
   jd = julday(lubridate::year(tme),
