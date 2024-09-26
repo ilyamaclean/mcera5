@@ -190,7 +190,7 @@ extract_clima <- function(
   msdwlwrf <- var_list$msdwlwrf
   fdir <- var_list$fdir
   ssrd <- var_list$ssrd
-  prec <- var_list$tp * 1000 # convert form mm to metres
+  prec <- var_list$tp * 1000 # convert from mm to metres
   lsm <- var_list$lsm
   temperature <- t2m - 273.15 # kelvin to celcius
   ## Coastal correction ----------
@@ -223,15 +223,15 @@ extract_clima <- function(
   windspeed = windheight(windspeed, 10, 2)
   winddir = (terra::atan2(u10, v10) * 180/pi + 180)%%360
   cloudcover = tcc * 100
-  netlong = abs(msnlwrf)
-  downlong = msdwlwrf
+  netlong = abs(msnlwrf) * 0.0036 # Convert to MJ/m^2/hr
+  downlong = msdwlwrf * 0.0036 # Convert to MJ/m^2/hr
   uplong = netlong + downlong
-  emissivity = downlong/uplong # converted to MJ m-2 hr-1
+  emissivity = downlong/uplong
   jd = julday(lubridate::year(tme),
               lubridate::month(tme),
               lubridate::day(tme))
-  rad_dni = fdir * 0.000001
-  rad_glbl = ssrd * 0.000001
+  rad_dni = fdir * 0.000001 # Convert form J/m^2 to MJ/m^2
+  rad_glbl = ssrd * 0.000001 # Convert form J/m^2 to MJ/m^2
   ## si processing -----------------
   # use t2m as template of dimensions for iterating through
   si <- t2m
@@ -253,7 +253,7 @@ extract_clima <- function(
   si <- terra::setValues(si, out)
 
   # Calc rad_dif
-  rad_dif = rad_glbl - rad_dni * si # converted to MJ m-2 hr-1 from J m-2 hr-1
+  rad_dif = rad_glbl - rad_dni * si
   ## szenith processing -----------------
   # use t2m as template of dimensions for iterating through
   szenith <- t2m
@@ -283,9 +283,10 @@ extract_clima <- function(
                                              tc  = terra::as.array(temperature),
                                              pk = terra::as.array(pres))$relative
     relhum[relhum > 100] <- 100
-    raddr <- (rad_dni * si)/0.0036
-    difrad <- rad_dif/0.0036
+    raddr <- (rad_dni * si)/0.0036 # convert back to W/m^2
+    difrad <- rad_dif/0.0036 # convert from MJ/hr to W/m^2
     swrad <- raddr + difrad
+    downlong <- downlong / 0.0036 # convert from MJ/hr to W/m^2
   }
   # Return list - ## SpatRasters now wrapped as won't store as list if saved otherwise'
   if (reformat == "microclimf") {

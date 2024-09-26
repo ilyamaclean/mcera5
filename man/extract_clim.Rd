@@ -49,7 +49,7 @@ correction. Default = 1.285, based on calibration against UK Met Office
 observations.}
 
 \item{reformat}{if set to "micropoint", the function will return a dataframe
-formated for input to runpointmodel from micropoint package}
+formated for input to runpointmodel from micropoint package with radiation units in W/m^2}
 }
 \value{
 a data frame containing hourly values for a suite of climate variables:

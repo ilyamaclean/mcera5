@@ -31,7 +31,7 @@
 #' correction. Default = 1.285, based on calibration against UK Met Office
 #' observations.
 #' @param reformat if set to "micropoint", the function will return a dataframe
-#' formated for input to runpointmodel from micropoint package
+#' formated for input to runpointmodel from micropoint package with radiation units in W/m^2
 #'
 #' @return a data frame containing hourly values for a suite of climate variables:
 #' @return `obs_time` | the date-time (timezone specified in col timezone)
